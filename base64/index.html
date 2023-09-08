@@ -1,0 +1,169 @@
+<html>
+
+<head>
+    <title>Bengkel - Base64 utils</title>
+    <link rel="stylesheet" href="/general.css?1">
+    <style>
+        
+        .wrapper {}
+
+        .wrapper>.text-io {
+            display: flex;
+            margin: 10px 0;
+            height: 250px;
+        }
+
+        .wrapper>.text-io>.content {
+            flex-grow: 1;
+            margin: 0 10px;
+        }
+
+        .wrapper>.text-io>.content>textarea {
+            display: block;
+            width: 100%;
+            height: 100%;
+            min-width: 100%;
+            min-height: 100%;
+            resize: none;
+        }
+        .wrapper > .text-io > .content > textarea.result {
+            
+        }
+
+        .wrapper>.text-io>.control {
+            flex-shrink: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .wrapper>.text-io>.control>input[type="button"] {}
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+    </div>
+    <script type="text/javascript">
+
+        (function () {
+
+            function loadscript(urls = [], callback = () => { }) {
+                var total = 0;
+
+                function evaluate() {
+                    if (++total == urls.length) callback();
+                }
+
+                for (var i = 0; i < urls.length; i++) {
+                    const url = urls[i];
+
+                    const scriptElement = document.createElement('script');
+                    scriptElement.src = url;
+                    scriptElement.onload = evaluate;
+                    document.head.appendChild(scriptElement);
+                }
+            }
+
+
+            function createTemplate(inputElement, outputElement, actionElement) {
+
+                var w = document.createElement('div');
+                w.classList.add('text-io');
+
+                var a = document.createElement('div');
+                a.classList.add('content', 'ci');
+
+                var b = document.createElement('div');
+                b.classList.add('content', 'co');
+
+                var x = document.createElement('div');
+                x.classList.add('control');
+
+                a.append(inputElement);
+                b.append(outputElement);
+
+                if (Array.isArray(actionElement)) {
+                    x.append(...actionElement);
+                } else {
+                    x.append(actionElement);
+                }
+
+                w.append(a, x, b);
+                return w;
+            }
+
+            function createIO(param = {}) {
+                param = {
+                    ...{ classList: [], readonly: false },
+                    ...param
+                };
+                var io = document.createElement('textarea');
+                io.classList.add('bkl-textarea',
+                    ...param.classList,
+                    ...(param.readonly ? ['readonly'] : [])
+                );
+                if (param.readonly) io.readOnly = true;
+                return io;
+            }
+
+            function createButton(name) {
+                var b = document.createElement('input');
+                b.type = 'button';
+                b.classList.add('bkl-button');
+                b.value = name;
+                return b;
+            }
+
+            function main() {
+                // appending document
+                var wrapper = document.querySelector('.wrapper');
+
+                var enc_source = createIO();
+
+                var enc_result = createIO({ readonly: true, classList: ['result'] });
+
+                var enc_trigger = createButton('encode');
+                enc_trigger.onclick = () => {
+                    if (!enc_source.value) return;
+                    enc_result.value = __bengkel__.base64.encode(enc_source.value);
+                }
+
+                var enc_clear = createButton('clear');
+                enc_clear.onclick = () => {
+                    enc_result.value = "";
+                    enc_source.value = "";
+                }
+
+                wrapper.append(createTemplate(enc_source, enc_result, [enc_trigger, enc_clear]));
+
+                var dec_source = createIO();
+
+                var dec_result = createIO({ readonly: true, classList: ['result'] });
+
+                var dec_trigger = createButton('decode');
+                dec_trigger.onclick = () => {
+                    if (!dec_source.value) return;
+                    dec_result.value = __bengkel__.base64.decode(dec_source.value);
+                }
+
+                var dec_clear = createButton('clear');
+                dec_clear.onclick = () => {
+                    dec_result.value = "";
+                    dec_source.value = "";
+                }
+
+                wrapper.append(createTemplate(dec_source, dec_result, [dec_trigger, dec_clear]));
+            }
+
+            loadscript(['/bengkel/bengkel.base64.js?' + Math.random()], main);
+        })();
+
+
+
+
+    </script>
+</body>
+
+</html>

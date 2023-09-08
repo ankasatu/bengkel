@@ -1,0 +1,145 @@
+<html>
+
+<head>
+    <title>Bengkel - Base64 text utils</title>
+    <link rel="stylesheet" href="/bengkel/template/style/main.css">
+    <style>
+        textarea {
+            min-height: 100px;
+        }
+
+        textarea.readonly {
+            resize: none;
+        }
+
+        .bkl-button {
+            padding: 10px;
+        }
+
+        .bkl-button.primary {
+            height: 70px;
+        }
+
+        .blk-border {
+            border: 1px solid var(--context-color);
+        }
+    </style>
+
+    <script type="text/javascript">
+        function __ls__(a = [], b = () => { }) { function c() { ++d == a.length && b() } for (var d = 0, e = 0; e < a.length; e++) { const b = a[e], d = document.createElement("script"); d.src = b + (-1 == b.indexOf("?") ? "?" : "") + "r=" + Math.random(), d.onload = c, document.head.appendChild(d) } }
+        function __lb__(a) { function b(a, b) { if (b instanceof Node) a.appendChild(b); else if (b.node instanceof Node) a.appendChild(b.node); else throw new Error("arg or arg.node is not instance of Node") } var d = a.cloneNode(!0), e = () => { }, f = { node: d, classList(...a) { for (var b, e = 0; e < a.length; e++) { b = a[e].split(" "); for (var g = 0; g < b.length; g++)d.classList.add(b[g]) } return f }, setTitle(a) { return d.title = a, f }, setValue(a) { return d.value = a, f }, setInnerHTML(a) { return d.innerHTML = a, f }, setInnerText(a) { return d.innerText = a, f }, appendChild(...a) { for (var c = 0; c < a.length; c++)b(d, a[c]); return f }, appendTo(a) { return b(a, d), f }, setStyle(a) { return d.style = a, f }, onClick(a) { return e = d.onclick = () => a(d), f }, eventExec(a) { d[a.toLowerCase()]() }, exec() { return e(), f }, remove() { d.remove() } }; return f }
+    </script>
+</head>
+
+<body>
+
+    <div class="wrapper">
+    </div>
+    <script type="text/javascript">
+
+        (function () {
+            var _ = __lb__;
+            var div = document.createElement("div");
+            var button = document.createElement("button");
+            var textarea = document.createElement("textarea"); 
+            textarea.classList.add("bkl-textarea"); 
+            textarea.spellcheck = false;
+
+            function coder(name, exec) {
+                var context = _(div).classList("context");
+
+                var sourceWrapper = _(div).classList("grow", "ci");
+                var resultWrapper = _(div).classList("grow", "co");
+                var control = _(div).classList("shrink", "context", "vertical"); 
+
+                context.appendChild(sourceWrapper, control, resultWrapper);
+
+                var source = _(textarea).appendTo(sourceWrapper).classList("block");
+                var result = _(textarea).appendTo(resultWrapper).classList("block", "result", "readonly");
+                result.node.readOnly = true;
+
+                _(button).appendTo(control).setInnerText(name).classList("bkl-button", "primary", "blk-border")
+                    .onClick(function () {
+                        if (!source.node.value) return;
+                        if (typeof exec !== "function") throw new Error("exec must be function");
+                        result.setValue(exec(source.node.value));
+                    });
+
+                _(button).appendTo(control).setInnerText("Clear").classList("bkl-button")
+                    .onClick(function () {
+                        result.setValue("");
+                        source.setValue("");
+                    });
+
+                return context;
+            }
+
+            function main(_wrapper, _b) {
+
+                var increment = 1;
+                var COLOR_ENCODER = "--context-color: rgba(79, 131, 162, 1)";
+                var COLOR_DECODER = "--context-color: rgba(253, 181, 117, 1)";
+
+                function getname(name) {
+                    return "Form " + (increment++) + ": " + name;
+                }
+
+                function encoder() {
+                    var ctx = coder("Encode", function (text) {
+                        try { return _b.base64.encode(text); }
+                        catch (e) { return e.message; }
+                    });
+
+                    return _b.playground.create(ctx.node).setTitle(getname("Encoder"))
+                        .classList("blk-border").setStyle(COLOR_ENCODER)
+                        .node;
+                }
+
+                function decoder() {
+                    var ctx = coder("Decode", function (text) {
+                        try { return _b.base64.decode(text); }
+                        catch (e) { return e.message; }
+                    });
+
+                    return _b.playground.create(ctx.node).setTitle(getname("Decoder"))
+                        .classList("blk-border").setStyle(COLOR_DECODER)
+                        .node;
+                }
+
+                function control() {
+                    return _b.playground.manager
+                        .register((action) => action.setInnerText("Add Decoder")
+                            .onClick(() => _wrapper.appendChild(decoder()))
+                            .classList("blk-border").setStyle(COLOR_DECODER)
+                        )
+                        .register((action) => action.setInnerText("Add Encoder")
+                            .onClick(() => _wrapper.appendChild(encoder()))
+                            .classList("blk-border").setStyle(COLOR_ENCODER)
+                        ).node
+                }
+
+                return { encoder, decoder, control };
+            }
+
+            __ls__([
+                '/bengkel/bengkel.base64.js',
+                '/bengkel/bengkel.playground.js',
+            ], function () {
+
+                var wrapper = document.querySelector('.wrapper');
+
+                var form = main(wrapper, __bengkel__);
+
+                wrapper.appendChild(form.control());
+                wrapper.appendChild(form.decoder());
+                wrapper.appendChild(form.encoder());
+            });
+        })();
+
+
+
+
+    </script>
+</body>
+
+</html>

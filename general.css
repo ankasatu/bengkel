@@ -1,0 +1,70 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --io-border-color: #8395a6;
+    --io-border-radius: 3px;
+    --padding: 5px;
+    --margin-w: 5px;
+    --bg-chess-a: #454545;
+    --bg-chess-b: #656565;
+    --bg-chess-size: 30px;
+    --bg-chess-pos: 15px;
+}
+
+
+input[type="button"] {
+    padding: var(--padding);
+    border: 1px solid var(--io-border-color);
+    border-radius: var(--io-border-radius);
+}
+
+textarea {
+    border: 1px solid var(--io-border-color);
+}
+
+textarea.readonly {
+    outline: none;
+}
+
+.bg-chess {
+    background-color: var(--bg-chess-b);
+    background-size: var(--bg-chess-size) var(--bg-chess-size);
+    background-position: 0 0, var(--bg-chess-pos) var(--bg-chess-pos);
+    background-image:
+        linear-gradient(45deg, var(--bg-chess-a) 25%, transparent 25%, transparent 75%, var(--bg-chess-a) 75%, var(--bg-chess-a)),
+        linear-gradient(45deg, var(--bg-chess-a) 25%, transparent 25%, transparent 75%, var(--bg-chess-a) 75%, var(--bg-chess-a));
+}
+
+
+
+.wrapper {}
+
+.wrapper > .context {
+    display: flex;
+    margin: var(--margin-w) 0;
+    min-height: 250px;
+}
+
+.wrapper > .context > .part-auto {
+    flex-grow: 1;
+    flex-direction: column;
+    margin: 0 var(--margin-w);
+}
+
+.wrapper > .context > .part-col-shrink {
+    flex-shrink: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--margin-w);
+}
+
+.wrapper > .context > .part-col-auto {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--margin-w);
+}

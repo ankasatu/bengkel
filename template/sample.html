@@ -1,0 +1,85 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="/bengkel/template/style/main.css">
+    <style>
+        .wrapper {
+            padding: 20px;
+        }
+    </style>
+    <script type="text/javascript">
+        function __ls__(a = [], b = () => { }) { function c() { ++d == a.length && b() } for (var d = 0, e = 0; e < a.length; e++) { const b = a[e], d = document.createElement("script"); d.src = b + (-1 == b.indexOf("?") ? "?" : "") + "r=" + Math.random(), d.onload = c, document.head.appendChild(d) } }
+    </script>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="playground">
+            <div class="meta">
+                <div class="title">
+                    <input type="text" value="This is example of title" spellcheck="false" />
+                </div>
+                <div class="control">
+                    <input type="button" class="action" />
+                    <input type="button" class="action" />
+                </div>
+            </div>
+            <div class="content">
+                <div class="text-io">
+                    <div class="content ci"><textarea class="bkl-textarea" spellcheck="false"></textarea></div>
+                    <div class="control"><input type="button" class="bkl-button" value="encode"><input type="button"
+                            class="bkl-button" value="clear"></div>
+                    <div class="content co"><textarea class="bkl-textarea result readonly" readonly=""
+                            spellcheck="false"></textarea></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        (function () {
+            __ls__([
+                '/bengkel/bengkel.base64.js',
+                '/bengkel/bengkel.playground.js',
+            ], function () {
+
+                var wrapper = document.querySelector(".wrapper");
+
+
+                wrapper.appendChild(__bengkel__.playground.manager
+                    .reorder(function (actionwList) {
+                        return actionwList.reverse();
+                    })
+                    .register((actionw) => {
+
+                        return actionw.setInnerText("new item")
+                            .onClick(function () {
+                                wrapper.appendChild(__bengkel__.playground.create(Math.random())
+                                    .setTitle("nyannnn " + Math.random())
+                                    .toggle()
+                                    .node);
+                            });
+                    })
+                    .node);
+
+                var hh = document.createElement("h1");
+                hh.innerText = "Hello World!!!";
+
+                wrapper.appendChild(__bengkel__.playground.create(hh)
+                    .setTitle("nyannnn")
+                    .toggle()
+                    .node);
+
+                wrapper.appendChild(__bengkel__.playground.create("<h3>nyannn</h3>")
+                    .setTitle("nyanpasu")
+                    .setStyle("--color-foreground: 247,221,83;--color-text:43,11,132")
+                    .node);
+
+            });
+
+        })();
+    </script>
+</body>
+
+</html>

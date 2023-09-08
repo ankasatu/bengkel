@@ -1,0 +1,216 @@
+<html>
+    <head>
+        <style>
+            :root {
+                --s-a01: 10px;
+                --s-a02: 5px;
+                --s-a03: 20px;
+                --s-a04: 40px;
+                --c-bga01: #151718;
+                --c-bga02: #282c2f;
+                --c-bga03: #5e6b74;
+                --c-bga04: #1f2326;
+                --c-p01: #e9e9e9;
+                --c-p02: #5e6b74;
+                --c-p11: #107dd4;
+                --c-p21: #d4103a;
+                --c-p31: #8fd410;
+                --sh-a01: 0px 1px 1px 0 #00000080;
+                --b-a01: 1px solid var(--c-bga03);
+                --br-a01: 3px;
+            }
+            html, body {
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                background-color: var(--c-bga01);
+            }
+
+            input {
+                padding: 0;
+                margin: 0;
+            }
+
+            .wrapper{
+                margin: 50px;
+            }
+        
+            .playground {
+                box-sizing: border-box;
+                min-width: 900px;
+                margin: var(--s-a01);
+            }
+            .playground > .meta {
+                display: flex;
+                padding: var(--s-a02) 0;
+                flex-direction: row-reverse;
+                background-color: var(--c-bga03);
+                border-top: 1px solid #fdfdfd4a;
+                box-shadow: var(--sh-a01);
+                z-index: 1;
+                position: relative;
+            }
+            .playground > .meta .title {
+                flex-grow: 1;
+            }
+            .playground > .meta .title > * {
+                width: 100%;
+                border: 0;
+                outline: none;
+                background: none;
+            }
+            .playground > .meta .control {
+                display: flex;
+                margin: 0 var(--s-a03);
+            }
+            .playground > .meta .control > * {
+                border: none;
+                background-color: var(--c-bga02);
+                height: 10px;
+                width: 10px;
+                border-radius: 100%;
+                margin: 0 var(--s-a02);
+                display: block;
+                align-self: center;
+            }
+
+            .playground > .meta .control > .remove {
+                background-color: var(--c-p21);
+            }
+            .playground > .meta .control > .toggle {
+                background-color: var(--c-p31);
+            }
+            .playground > .content {
+                padding: var(--s-a04);
+                background-color: var(--c-bga02);
+                color: var(--c-p01);
+            }
+
+            .playground > .content * {
+                box-sizing: border-box;
+            }
+
+            .playground > .content input[type="text"], 
+            .playground > .content textarea {
+                background: #1f2326;
+                border: 0;
+                box-shadow: inset var(--sh-a02);
+                outline: var(--b-a01);
+                color: var(--c-p02);
+            }
+
+            .playground > .content input[type="button"] {
+                background-color: var(--c-p11);
+                border: 0;
+                padding: var(--s-a02) var(--s-a03);
+                color: var(--c-p01);
+                border-radius: var(--br-a01);
+            }
+        </style>
+
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="playground">
+                <div class="meta">
+                    <div class="title">
+                        <input type="text" value="This is example of title"  spellcheck="false"/>
+                    </div>
+                    <div class="control">
+                        <input type="button" />
+                        <input type="button" />
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="text-io"><div class="content ci"><textarea class="bkl-textarea"  spellcheck="false"></textarea></div><div class="control"><input type="button" class="bkl-button" value="encode"><input type="button" class="bkl-button" value="clear"></div><div class="content co"><textarea class="bkl-textarea result readonly" readonly=""  spellcheck="false"></textarea></div></div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            (function(){
+                function PlaygroundW(domHtml, options) {
+                    var div = document.createElement("div");
+                    var inputText = document.createElement("input"); inputText.type = "text"; inputText.spellcheck = false;
+                    var button = document.createElement("input"); button.type = "button";
+
+                    var CC = {
+                        playground: "playground",
+                        meta: "meta",
+                        title: "title",
+                        control: "control",
+                        content: "content",
+                        buttonRemove: "button remove",
+                        buttonToggle: "button toggle",
+                    }
+
+                    function cr(cat, classlist = []) {
+                        var tw = cat.cloneNode(true);
+                        for(var i = 0; i < classlist.length; i++) {
+                            var c = classlist[i].split(' ');
+                            for(var j = 0; j < c.length; j++) {
+                                tw.classList.add(c[j]);
+                            }
+                        }
+                        return tw;
+                    }
+
+                    var base = cr(div, [CC.playground]);
+                    var meta = cr(div, [CC.meta]);
+                    var content = cr(div, [CC.content]);
+
+                    if (typeof domHtml === "string") {
+                        var html = document.createElement("template");
+                        content.innerHTML = domHtml;
+                    } else {
+                        content.appendChild(domHtml);
+                    }
+
+                    // title region
+                    var title = cr(div, [CC.title]);
+                    var text = cr(inputText);
+                    title.appendChild(text);
+
+                    meta.appendChild(title);
+
+
+                    // control region
+                    var control = cr(div, [CC.control]);
+                    var remove = cr(button, [CC.buttonRemove]);
+                    var toggle = cr(button, [CC.buttonToggle]);
+                    remove.title = "remove";
+                    toggle.title = "toggle";
+                    remove.onclick = function() {
+                        base.remove();
+                    }
+                    toggle.onclick = function() {
+                        if (!content.hidden) content.hidden = true;
+                        else content.hidden = false;
+                    }
+                    control.appendChild(remove);
+                    control.appendChild(toggle);
+
+                    meta.appendChild(control);
+
+                    // construct all item
+                    base.appendChild(meta);
+                    base.appendChild(content);
+                    return base;
+                }
+
+
+
+                var wrapper = document.querySelector(".wrapper");
+
+                var hh = document.createElement("h1");
+                hh.innerText = "Hello World!!!";
+
+                wrapper.appendChild(PlaygroundW(hh));
+
+                wrapper.appendChild(PlaygroundW("<h3>nyannn</h3>"));
+
+            })();
+        </script>
+    </body>
+</html>
