@@ -91,6 +91,10 @@ var __bengkel__ = (!__bengkel__ ? {} : __bengkel__);
                 content.node.hidden = stateToggleIsOpen;
             }).exec();
 
+        var actionList = [];
+        actionList.push(btnRemove);
+        actionList.push(btnToggle);
+
         var playgroundw = {
             node: base.node,
             setTitle(value) {
@@ -116,6 +120,17 @@ var __bengkel__ = (!__bengkel__ ? {} : __bengkel__);
             },
             remove() {
                 btnRemove.eventExec('onclick');
+                return playgroundw;
+            },
+            actionReorder(cb) {
+                if (typeof cb !== 'function') throw new Error("argument must be callback");
+
+                var result = cb(actionList);
+
+                if (!Array.isArray(result)) throw new Error("callback return must be array");
+
+                control.node.replaceChildren();
+                result.forEach((p) => p.appendTo(control));
                 return playgroundw;
             }
         };
